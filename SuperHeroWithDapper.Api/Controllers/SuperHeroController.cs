@@ -1,3 +1,4 @@
+using System.Data;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -93,5 +94,29 @@ public class SuperHeroController : ControllerBase
             .ExecuteAsync("delete from SuperHero where id = @Id", new { Id = heroId });
 
         return NoContent();
+    }
+    
+    [HttpGet("{name}")]
+    public async Task<ActionResult<SuperHeroDataModel>> GetSuperHeroByName(string name)
+    {
+        using var connection = new SqlConnection(
+            _config.GetConnectionString("DefaultConnection"));
+
+        var parameters = new DynamicParameters();
+        parameters.Add("@Name", name, DbType.String);
+
+        var superHeroes = await connection
+            .QueryAsync<SuperHeroDataModel>(
+                "GetSuperHeroByName", 
+                parameters,
+                commandType: CommandType.StoredProcedure 
+            );
+
+        if (superHeroes == null || !superHeroes.Any())
+        {
+            return NotFound($"Superhero with name '{name}' not found.");
+        }
+
+        return Ok(superHeroes);
     }
 }
