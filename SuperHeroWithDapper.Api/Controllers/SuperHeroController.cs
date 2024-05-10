@@ -72,17 +72,17 @@ public class SuperHeroController : ControllerBase
         await connection
             .ExecuteAsync(
                 $@"update SuperHero set 
-                     name = @{nameof(SuperHeroDataModel.Name)}, 
-                     firstName = @{nameof(SuperHeroDataModel.FirstName)}, 
-                     lastName = @{nameof(SuperHeroDataModel.LastName)}, 
-                     place = @{nameof(SuperHeroDataModel.Place)}
+                    name = @{nameof(SuperHeroDataModel.Name)}, 
+                    firstName = @{nameof(SuperHeroDataModel.FirstName)}, 
+                    lastName = @{nameof(SuperHeroDataModel.LastName)}, 
+                    place = @{nameof(SuperHeroDataModel.Place)}
                 where id = superHero.Id",
                 superHero
             );
 
         return NoContent();
     }
-    
+
     [HttpDelete("{heroId:int}")]
     public async Task<ActionResult> Delete(int heroId)
     {
